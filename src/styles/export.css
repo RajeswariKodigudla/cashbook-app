@@ -1,0 +1,73 @@
+.export-page {
+  padding-bottom: 80px;
+}
+
+.export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.export-header h3 {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.right-icons span {
+  margin-left: 12px;
+}
+
+.report-card {
+  margin: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.export-actions {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.export-actions button {
+  width: 45%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+.save {
+  background: #dbeef4;
+}
+
+.share {
+  background: #3a86a5;
+  color: #fff;
+}

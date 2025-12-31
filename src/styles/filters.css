@@ -1,0 +1,15 @@
+.filters {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+}
+.filters button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #eee;
+}
+.filters .active {
+  background: #4a90a4;
+  color: white;
+}

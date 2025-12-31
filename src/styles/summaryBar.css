@@ -1,0 +1,58 @@
+.summary-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+}
+
+.summary-bar .buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.income-btn {
+  flex: 1;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.expense-btn {
+  flex: 1;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.summary-box {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.summary-box p {
+  font-size: 12px;
+  color: #777;
+}
+
+.summary-box h4 {
+  margin: 0;
+}
+
+.green {
+  color: #2ecc71;
+}
+
+.red {
+  color: #e74c3c;
+}

@@ -1,0 +1,61 @@
+.drawer {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  height: 100%;
+  background: #ffffff;
+  padding: 20px;
+  transition: 0.3s ease;
+  z-index: 1000;
+}
+
+.drawer.open {
+  left: 0;
+}
+
+/* HEADER */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.drawer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-title {
+  font-size: 28px;
+  color: #4a90a4;
+  font-weight: 500;
+}
+
+.dropdown {
+  color: #4a90a4;
+}
+
+/* CLOSE */
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ITEMS */
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 0;
+  font-size: 16px;
+  color: #000;
+}
+
+.drawer-item .icon {
+  font-size: 22px;
+  color: #000;
+}

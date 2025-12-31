@@ -1,0 +1,22 @@
+.search-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #fff;
+}
+
+.search-header input {
+  flex: 1;
+  margin-left: 10px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #f1f1f1;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-header .back {
+  font-size: 22px;
+  cursor: pointer;
+}

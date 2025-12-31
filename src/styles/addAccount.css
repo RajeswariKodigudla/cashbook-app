@@ -1,0 +1,64 @@
+.add-account-page {
+  padding: 12px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.add-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* LIST */
+.account-list {
+  margin-top: 20px;
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+
+/* Active Cashbook */
+.account-card.active {
+  border: 2px solid #4a90a4;
+}
+
+/* TEXT */
+.name {
+  color: #333;
+}
+
+/* DOT MENU */
+.dots {
+  font-size: 20px;
+  color: #444;
+}
+
+/* FLOATING BUTTON */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #4a90a4;
+  color: #ffffff;
+  font-size: 34px;
+  cursor: pointer;
+}

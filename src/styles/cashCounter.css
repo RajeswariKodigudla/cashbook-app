@@ -1,0 +1,116 @@
+.cash-page {
+  padding: 12px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.cash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cash-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* TOTAL BOX */
+.cash-total-box {
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.cash-total-box h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.cash-total-box p {
+  margin: 0;
+  color: #888;
+}
+
+/* TABLE HEADER */
+.cash-table-head {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+/* ROW */
+.cash-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* QTY CONTROLS */
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-controls button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #f3f3f3;
+  font-size: 18px;
+}
+
+.qty-controls input {
+  width: 48px;
+  text-align: center;
+  border: none;
+  font-size: 16px;
+}
+
+/* FOOTER */
+.cash-footer {
+  margin-top: 16px;
+}
+
+.total-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* ACTIONS */
+.cash-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.clear {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #dbeef4;
+  color: #4a90a4;
+  font-size: 16px;
+}
+
+.share {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #4a90a4;
+  color: #ffffff;
+  font-size: 16px;
+}

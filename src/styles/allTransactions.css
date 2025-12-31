@@ -1,0 +1,107 @@
+.all-page {
+  padding: 12px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.all-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.all-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.icons {
+  display: flex;
+  gap: 12px;
+}
+
+/* FILTERS */
+.all-filters {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.all-filters button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #f0f0f0;
+  color: #777;
+}
+
+.all-filters .active {
+  background: #4a90a4;
+  color: #ffffff;
+}
+
+/* LABEL */
+.label {
+  text-align: center;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* TABLE */
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px 0;
+}
+
+.table-header {
+  font-weight: 500;
+}
+
+.table-row {
+  border-bottom: 1px solid #eeeeee;
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  color: #999;
+  margin-top: 80px;
+}
+
+/* BOTTOM */
+.all-bottom {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.all-bottom div {
+  flex: 1;
+  text-align: center;
+}
+
+.green {
+  color: #4caf50;
+}
+
+.red {
+  color: #c0392b;
+}
+
+.income {
+  color: #4caf50;
+}
+
+.expense {
+  color: #c0392b;
+}

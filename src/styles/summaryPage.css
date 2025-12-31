@@ -1,0 +1,79 @@
+.summary-page {
+  padding: 12px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* FILTERS */
+.summary-filters {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.summary-filters button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #f0f0f0;
+  color: #777;
+  font-size: 14px;
+}
+
+.summary-filters .active {
+  background: #4a90a4;
+  color: #ffffff;
+}
+
+/* LABEL */
+.summary-label {
+  text-align: center;
+  color: #666;
+  margin-top: 6px;
+}
+
+/* EMPTY */
+.no-summary {
+  text-align: center;
+  color: #999;
+  margin-top: 80px;
+}
+
+/* BOTTOM TOTALS */
+.summary-bottom {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.summary-bottom div {
+  flex: 1;
+  text-align: center;
+}
+
+.green {
+  color: #4caf50;
+}
+
+.red {
+  color: #c0392b;
+}

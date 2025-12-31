@@ -1,0 +1,55 @@
+.summary {
+  padding: 12px;
+}
+
+/* BUTTON CONTAINER */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* COMMON BUTTON STYLE (KEY PART) */
+.action-buttons button {
+  flex: 1;                    /* SAME WIDTH */
+  height: 48px;               /* SAME HEIGHT */
+  border-radius: 24px;        /* PERFECT PILL */
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* INCOME */
+.income-btn {
+  background: #4caf50;
+}
+
+/* EXPENSE */
+.expense-btn {
+  background: #c0392b;
+}
+
+/* TOTALS */
+.totals {
+  display: flex;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px 0;
+  border: 1px solid #eeeeee;
+}
+
+.totals div {
+  flex: 1;
+  text-align: center;
+}
+
+.green {
+  color: #4caf50;
+}
+
+.red {
+  color: #c0392b;
+}

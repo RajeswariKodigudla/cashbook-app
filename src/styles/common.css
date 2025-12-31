@@ -1,0 +1,21 @@
+/* LIGHT (default) */
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --card: #ffffff;
+  --border: #dddddd;
+}
+
+/* DARK */
+.dark {
+  --bg: #121212;
+  --text: #ffffff;
+  --card: #1e1e1e;
+  --border: #333333;
+}
+
+/* GLOBAL APPLY */
+body {
+  background: var(--bg);
+  color: var(--text);
+}

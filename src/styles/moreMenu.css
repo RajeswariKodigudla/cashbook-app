@@ -1,0 +1,44 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+}
+
+/* MENU CARD – RIGHT SIDE */
+.menu-card {
+  position: fixed;
+  top: 56px;              /* below header */
+  right: 12px;            /* 🔴 RIGHT SIDE FIX */
+  width: 240px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+/* MENU ITEM */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #f5f5f5;
+}
+
+/* ICON */
+.menu-item .material-icons-outlined {
+  font-size: 20px;
+}
+
+/* DELETE */
+.menu-item.danger {
+  color: #d32f2f;
+}
