@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/cashbook-app/static/css/main.607144d8.css",
+    "main.js": "/cashbook-app/static/js/main.bf7149c7.js",
+    "index.html": "/cashbook-app/index.html",
+    "main.607144d8.css.map": "/cashbook-app/static/css/main.607144d8.css.map",
+    "main.bf7149c7.js.map": "/cashbook-app/static/js/main.bf7149c7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.607144d8.css",
+    "static/js/main.bf7149c7.js"
+  ]
+}
