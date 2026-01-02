@@ -43,3 +43,68 @@
 .transaction-row .income {
   color: green;
 }
+
+/* =========================
+   EMPTY STATE CENTER
+========================= */
+.empty-state {
+  height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* BOOK ICON WITH C */
+.book-icon-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.book-icon {
+  font-size: 100px;
+  color: #e0e0e0;
+}
+
+.book-c {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 36px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* TEXT */
+.empty-text {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #777;
+}
+
+/* JUMPING ARROW BELOW TEXT */
+.down-arrow {
+  font-size: 32px;
+  color: #aaa;
+  margin-top: 6px;
+  animation: bounce 1.2s infinite;
+}
+
+/* BOUNCE ANIMATION */
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+}

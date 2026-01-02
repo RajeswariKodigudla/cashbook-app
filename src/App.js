@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import AuthGuard from "./components/AuthGuard";
+
 import Income from "./pages/Income";
 import Expense from "./pages/Expense";
 import EditTransaction from "./pages/EditTransaction";
-
-
 
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
@@ -25,17 +26,32 @@ import Bookmark from "./pages/Bookmark";
 
 import AddAccountModal from "./components/AddAccountModal";
 import AccountSuccessModal from "./components/AccountSuccessModal";
+import LoginModal from "./components/LoginModal";
 
-export default function App() {
+function AppContent() {
+  const { user, login } = useAuth();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  // ✅ SEARCH STATE (IMPORTANT)
   const [search, setSearch] = useState("");
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleLoginSuccess = (userData, token) => {
+    login(userData, token);
+    setShowLogin(false);
+    console.log('✅ Login successful, user:', userData);
+  };
 
   return (
-    <BrowserRouter>
+    <>
+      {/* LOGIN MODAL - Show if user wants to login manually */}
+      {showLogin && (
+        <LoginModal 
+          onClose={() => setShowLogin(false)} 
+          onSuccess={handleLoginSuccess}
+        />
+      )}
+
       {/* HEADER */}
       <Header
         openDrawer={() => setOpenDrawer(true)}
@@ -50,31 +66,29 @@ export default function App() {
         openAddAccount={() => setShowAddAccount(true)}
       />
 
-      {/* ROUTES */}
+      {/* ROUTES - Protected by AuthGuard */}
       <Routes>
-        <Route path="/" element={<Home search={search} />} />
-          <Route path="/income" element={<Income />} />   {/* ✅ REQUIRED */}
-<Route path="/expense" element={<Expense />} />
-<Route path="/edit/:id" element={<EditTransaction />} />
+        <Route path="/" element={<AuthGuard><Home search={search} /></AuthGuard>} />
+        <Route path="/income" element={<AuthGuard><Income /></AuthGuard>} />
+        <Route path="/expense" element={<AuthGuard><Expense /></AuthGuard>} />
+        <Route path="/edit/:id" element={<AuthGuard><EditTransaction /></AuthGuard>} />
 
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/summary" element={<Summary />} />
-        <Route path="/transactions" element={<AllTransactions />} />
-        <Route path="/export" element={<ExportAllAccounts />} />
-        <Route path="/bookmark" element={<Bookmark />} />
-        <Route path="/notebook" element={<Notebook />} />
-        <Route path="/cash-counter" element={<CashCounter />} />
-        <Route path="/calculator" element={<Calculator />} />
-        <Route path="/backup-restore" element={<BackupRestore />} />
-        <Route path="/app-lock" element={<AppLock />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/faq" element={<FAQ />} />
+        <Route path="/calendar" element={<AuthGuard><Calendar /></AuthGuard>} />
+        <Route path="/summary" element={<AuthGuard><Summary /></AuthGuard>} />
+        <Route path="/alltransactions" element={<AuthGuard><AllTransactions /></AuthGuard>} />
 
-
-      
+        <Route path="/export" element={<AuthGuard><ExportAllAccounts /></AuthGuard>} />
+        <Route path="/bookmark" element={<AuthGuard><Bookmark /></AuthGuard>} />
+        <Route path="/notebook" element={<AuthGuard><Notebook /></AuthGuard>} />
+        <Route path="/cash-counter" element={<AuthGuard><CashCounter /></AuthGuard>} />
+        <Route path="/calculator" element={<AuthGuard><Calculator /></AuthGuard>} />
+        <Route path="/backup-restore" element={<AuthGuard><BackupRestore /></AuthGuard>} />
+        <Route path="/app-lock" element={<AuthGuard><AppLock /></AuthGuard>} />
+        <Route path="/settings" element={<AuthGuard><Settings /></AuthGuard>} />
+        <Route path="/faq" element={<AuthGuard><FAQ /></AuthGuard>} />
       </Routes>
 
-      {/* ADD ACCOUNT BOTTOM SHEET */}
+      {/* ADD ACCOUNT MODAL */}
       {showAddAccount && (
         <AddAccountModal
           onClose={() => setShowAddAccount(false)}
@@ -85,10 +99,18 @@ export default function App() {
         />
       )}
 
-      {/* SUCCESS BOTTOM SHEET */}
+      {/* SUCCESS MODAL */}
       {showSuccess && (
         <AccountSuccessModal onClose={() => setShowSuccess(false)} />
       )}
-    </BrowserRouter>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

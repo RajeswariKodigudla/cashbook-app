@@ -34,10 +34,7 @@ export default function Notebook() {
       {/* EMPTY STATE */}
       {notes.length === 0 && (
         <div className="notebook-empty">
-          <img
-            src="https://illustrations.popsy.co/gray/reading.svg"
-            alt="empty"
-          />
+          
           <p>Tap + to add your first note</p>
         </div>
       )}

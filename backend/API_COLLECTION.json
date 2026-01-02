@@ -1,0 +1,244 @@
+{
+  "info": {
+    "name": "Cashbook API",
+    "description": "API collection for Cashbook Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Get All Accounts",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "accounts"]
+            }
+          }
+        },
+        {
+          "name": "Create Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Cashbook\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "accounts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"]
+            }
+          }
+        },
+        {
+          "name": "Create Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"expense\",\n  \"amount\": 50.00,\n  \"date\": \"2025-01-15\",\n  \"time\": \"14:30\",\n  \"account\": \"Cashbook\",\n  \"name\": \"Lunch\",\n  \"category\": \"Food\",\n  \"remark\": \"Restaurant\",\n  \"payment\": \"Cash\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"]
+            }
+          }
+        },
+        {
+          "name": "Get Summary",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions", "summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "Get All Notes",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            }
+          }
+        },
+        {
+          "name": "Create Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"This is a note\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"Dark\",\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Backup",
+      "item": [
+        {
+          "name": "Get Backup",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/backup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "backup"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
+

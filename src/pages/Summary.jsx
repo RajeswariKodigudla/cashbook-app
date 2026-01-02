@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/summaryPage.css";
-import { getTransactions } from "../utils/transactions";
+import { getTransactions } from "../utils/apiTransactions";
 
 const filters = ["All", "Daily", "Week", "Month", "Year"];
 
@@ -14,47 +14,55 @@ export default function Summary() {
     calculateSummary(activeFilter);
   }, [activeFilter]);
 
-  const calculateSummary = (filter) => {
-    const data = getTransactions();
-    let income = 0;
-    let expense = 0;
+  const calculateSummary = async (filter) => {
+    try {
+      const transactions = await getTransactions();
+      let income = 0;
+      let expense = 0;
 
-    const now = new Date();
+      const now = new Date();
 
-    Object.entries(data).forEach(([date, values]) => {
-      const d = new Date(date);
+      transactions.forEach((t) => {
+        const d = new Date(t.date);
 
-      let include = false;
+        let include = false;
 
-      if (filter === "All") include = true;
+        if (filter === "All") include = true;
 
-      if (filter === "Daily") {
-        include = d.toDateString() === now.toDateString();
-      }
+        if (filter === "Daily") {
+          include = d.toDateString() === now.toDateString();
+        }
 
-      if (filter === "Week") {
-        const weekAgo = new Date();
-        weekAgo.setDate(now.getDate() - 7);
-        include = d >= weekAgo && d <= now;
-      }
+        if (filter === "Week") {
+          const weekAgo = new Date();
+          weekAgo.setDate(now.getDate() - 7);
+          include = d >= weekAgo && d <= now;
+        }
 
-      if (filter === "Month") {
-        include =
-          d.getMonth() === now.getMonth() &&
-          d.getFullYear() === now.getFullYear();
-      }
+        if (filter === "Month") {
+          include =
+            d.getMonth() === now.getMonth() &&
+            d.getFullYear() === now.getFullYear();
+        }
 
-      if (filter === "Year") {
-        include = d.getFullYear() === now.getFullYear();
-      }
+        if (filter === "Year") {
+          include = d.getFullYear() === now.getFullYear();
+        }
 
-      if (include) {
-        income += values.income;
-        expense += values.expense;
-      }
-    });
+        if (include) {
+          if (t.type === "income") {
+            income += Number(t.amount);
+          } else if (t.type === "expense") {
+            expense += Number(t.amount);
+          }
+        }
+      });
 
-    setTotals({ income, expense });
+      setTotals({ income, expense });
+    } catch (error) {
+      console.error("Error calculating summary:", error);
+      setTotals({ income: 0, expense: 0 });
+    }
   };
 
   return (

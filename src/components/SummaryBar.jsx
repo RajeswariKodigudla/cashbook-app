@@ -1,19 +1,33 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getTransactionSummary } from "../utils/apiTransactions";
 import "../styles/summaryBar.css";
 
 export default function SummaryBar() {
   const navigate = useNavigate();
+  const [summary, setSummary] = useState({
+    totalIncome: 0,
+    totalExpense: 0,
+    balance: 0,
+  });
 
-  const transactions =
-    JSON.parse(localStorage.getItem("transactions")) || [];
+  useEffect(() => {
+    const loadSummary = async () => {
+      try {
+        const data = await getTransactionSummary();
+        setSummary(data || { totalIncome: 0, totalExpense: 0, balance: 0 });
+      } catch (error) {
+        console.error("Error loading summary:", error);
+        // Keep default values on error
+      }
+    };
 
-  const income = transactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+    loadSummary();
+  }, []);
 
-  const expense = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const income = summary.totalIncome || 0;
+  const expense = summary.totalExpense || 0;
+  const balance = summary.balance || 0;
 
   return (
     <div className="summary-bar">
@@ -44,7 +58,7 @@ export default function SummaryBar() {
         </div>
         <div>
           <p>Total</p>
-          <h4>{income - expense}</h4>
+          <h4>{balance}</h4>
         </div>
       </div>
     </div>

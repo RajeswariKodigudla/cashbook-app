@@ -1,33 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FilterTabs from "../components/FilterTabs";
 import SummaryBar from "../components/SummaryBar";
 import { filterByRange } from "../utils/dateFilters";
+import { getTransactions } from "../utils/apiTransactions";
 import "../styles/home.css";
 
-export default function Home() {
+export default function Home({ search }) {
   const [range, setRange] = useState("all");
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const transactions =
-    JSON.parse(localStorage.getItem("transactions")) || [];
+  // Fetch transactions from API
+  useEffect(() => {
+    const loadTransactions = async () => {
+      try {
+        setLoading(true);
+        const data = await getTransactions();
+        setTransactions(data || []);
+        setError("");
+      } catch (err) {
+        console.error("Error loading transactions:", err);
+        setError("Failed to load transactions. Please refresh the page.");
+        // Fallback to empty array
+        setTransactions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadTransactions();
+  }, []);
+
+  // Filter transactions by date range
   const filtered = filterByRange(transactions, range);
+
+  // Filter by search if provided
+  const searchFiltered = search
+    ? filtered.filter(
+        (t) =>
+          (t.name && t.name.toLowerCase().includes(search.toLowerCase())) ||
+          (t.category && t.category.toLowerCase().includes(search.toLowerCase())) ||
+          (t.remark && t.remark.toLowerCase().includes(search.toLowerCase()))
+      )
+    : filtered;
 
   return (
     <>
+      {/* FILTER TABS */}
       <FilterTabs active={range} onChange={setRange} />
 
-      {filtered.length === 0 && (
-        <div className="empty">
-          <div className="book-icon">
-            <span className="book-c">C</span>
-          </div>
-          <p>No Transaction Yet</p>
+      {/* LOADING STATE */}
+      {loading && (
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          Loading transactions...
         </div>
       )}
 
-      {filtered.length > 0 && (
+      {/* ERROR STATE */}
+      {error && !loading && (
+        <div style={{ color: "red", padding: "10px", textAlign: "center", backgroundColor: "#ffebee", margin: "10px" }}>
+          {error}
+        </div>
+      )}
+
+      {/* ✅ EMPTY STATE */}
+      {!loading && !error && searchFiltered.length === 0 && (
+        <div className="empty-state">
+          {/* BOOK ICON WITH C */}
+          <div className="book-icon-wrapper">
+            <span className="material-symbols-outlined book-icon">
+              menu_book
+            </span>
+            <span className="book-c">C</span>
+          </div>
+
+          {/* TEXT */}
+          <p className="empty-text">No Transaction Yet</p>
+
+          {/* JUMPING ARROW BELOW TEXT */}
+          <span className="material-symbols-outlined down-arrow">
+            arrow_downward
+          </span>
+        </div>
+      )}
+
+      {/* ✅ TRANSACTIONS LIST */}
+      {!loading && !error && searchFiltered.length > 0 && (
         <div className="transaction-list">
-          {filtered.map((t) => (
+          {searchFiltered.map((t) => (
             <div key={t.id} className="transaction-row">
               <div className="left">
                 <div className="name">{t.name || t.type}</div>
@@ -51,6 +112,7 @@ export default function Home() {
         </div>
       )}
 
+      {/* SUMMARY BAR */}
       <SummaryBar />
     </>
   );

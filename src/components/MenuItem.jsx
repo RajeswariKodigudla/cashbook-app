@@ -4,7 +4,12 @@ export default function MenuItem({ icon, text, onClick, danger }) {
       className={`menu-item ${danger ? "danger" : ""}`}
       onClick={onClick}
     >
-      <span className="material-icons-outlined">{icon}</span>
+      {/* ICON */}
+      <span className="material-symbols-outlined menu-icon">
+        {icon}
+      </span>
+
+      {/* TEXT */}
       <span className="menu-text">{text}</span>
     </div>
   );
