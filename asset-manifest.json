@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/cashbook-app/static/css/main.45c41d87.css",
-    "main.js": "/cashbook-app/static/js/main.928202e6.js",
+    "main.css": "/cashbook-app/static/css/main.ecd2b5f4.css",
+    "main.js": "/cashbook-app/static/js/main.78fc5433.js",
     "index.html": "/cashbook-app/index.html",
-    "main.45c41d87.css.map": "/cashbook-app/static/css/main.45c41d87.css.map",
-    "main.928202e6.js.map": "/cashbook-app/static/js/main.928202e6.js.map"
+    "main.ecd2b5f4.css.map": "/cashbook-app/static/css/main.ecd2b5f4.css.map",
+    "main.78fc5433.js.map": "/cashbook-app/static/js/main.78fc5433.js.map"
   },
   "entrypoints": [
-    "static/css/main.45c41d87.css",
-    "static/js/main.928202e6.js"
+    "static/css/main.ecd2b5f4.css",
+    "static/js/main.78fc5433.js"
   ]
 }
