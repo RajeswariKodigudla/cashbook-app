@@ -1,0 +1,1 @@
+const o="system";function r(){return localStorage.getItem("theme")||o}function a(t){const e=document.documentElement;if(t==="dark")e.classList.add("dark");else if(t==="light")e.classList.remove("dark");else{const s=window.matchMedia("(prefers-color-scheme: dark)").matches;e.classList.toggle("dark",s)}}export{a as applyTheme,r as getTheme};
