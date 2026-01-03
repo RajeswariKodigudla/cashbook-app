@@ -130,3 +130,4 @@ fetch('http://127.0.0.1:8000/api/auth/login/', {
 
 Use `test-login.html` to debug step by step!
 
+

@@ -7,7 +7,7 @@ export const drawerMenu = [
 },
   { id: 2, label: "Calendar", icon: "calendar_month", path: "/calendar" },
 { id: 3, label: "Summary", icon: "description", path: "/summary" },
-{ id: 4, label: "All Transactions", icon: "list_alt", path: "/ transactions" },
+{ id: 4, label: "All Transactions", icon: "list_alt", path: "/alltransactions" },
 { id: 5, label: "Add Account", icon: "person_add", path: "/account" },
 {
   id: 6,

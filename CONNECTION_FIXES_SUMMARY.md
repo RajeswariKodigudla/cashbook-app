@@ -285,3 +285,4 @@ console.log('Token:', localStorage.getItem('authToken'));
 
 Your frontend is now configured to connect to Django backend! 🎉
 
+

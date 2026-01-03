@@ -71,3 +71,27 @@ th, td {
   background: #3a86a5;
   color: #fff;
 }
+
+.txn-table {
+  margin-top: 20px;
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+.txn-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.txn-table td {
+  text-align: left;
+  padding: 8px 6px;
+}
+
+.txn-table th:first-child,
+.txn-table td:first-child {
+  text-align: left;
+  padding-left: 8px;
+}

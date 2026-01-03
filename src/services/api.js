@@ -111,23 +111,31 @@ const apiCall = async (endpoint, options = {}, retry = true) => {
 
 // Auth API
 export const authAPI = {
-  register: async (username, email, password) => {
-    return apiCall('/auth/register', {
+  register: async (username, email, password, password_confirm, first_name, last_name) => {
+    return apiCall('/register/', {
       method: 'POST',
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ 
+        username, 
+        email, 
+        password, 
+        password_confirm, 
+        first_name: first_name || '', 
+        last_name: last_name || '' 
+      }),
     });
   },
 
   login: async (username, password) => {
-    // Django uses username, not email for login
-    return apiCall('/auth/login/', {
+    // Django REST Framework JWT uses /api/token/ endpoint
+    return apiCall('/token/', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     });
   },
 
   refresh: async (refreshToken) => {
-    return apiCall('/auth/refresh/', {
+    // Django REST Framework JWT uses /api/token/refresh/ endpoint
+    return apiCall('/token/refresh/', {
       method: 'POST',
       body: JSON.stringify({ refresh: refreshToken }),
     });
@@ -150,29 +158,29 @@ export const authAPI = {
 // Accounts API
 export const accountsAPI = {
   getAll: async () => {
-    return apiCall('/accounts');
+    return apiCall('/accounts/');
   },
 
   getById: async (id) => {
-    return apiCall(`/accounts/${id}`);
+    return apiCall(`/accounts/${id}/`);
   },
 
   create: async (name) => {
-    return apiCall('/accounts', {
+    return apiCall('/accounts/', {
       method: 'POST',
       body: JSON.stringify({ name }),
     });
   },
 
   update: async (id, name) => {
-    return apiCall(`/accounts/${id}`, {
+    return apiCall(`/accounts/${id}/`, {
       method: 'PUT',
       body: JSON.stringify({ name }),
     });
   },
 
   delete: async (id) => {
-    return apiCall(`/accounts/${id}`, {
+    return apiCall(`/accounts/${id}/`, {
       method: 'DELETE',
     });
   },
@@ -190,30 +198,30 @@ export const transactionsAPI = {
     if (filters.skip) queryParams.append('skip', filters.skip);
 
     const queryString = queryParams.toString();
-    const endpoint = queryString ? `/transactions?${queryString}` : '/transactions';
+    const endpoint = queryString ? `/transactions/?${queryString}` : '/transactions/';
     return apiCall(endpoint);
   },
 
   getById: async (id) => {
-    return apiCall(`/transactions/${id}`);
+    return apiCall(`/transactions/${id}/`);
   },
 
   create: async (transactionData) => {
-    return apiCall('/transactions', {
+    return apiCall('/transactions/', {
       method: 'POST',
       body: JSON.stringify(transactionData),
     });
   },
 
   update: async (id, transactionData) => {
-    return apiCall(`/transactions/${id}`, {
+    return apiCall(`/transactions/${id}/`, {
       method: 'PUT',
       body: JSON.stringify(transactionData),
     });
   },
 
   delete: async (id) => {
-    return apiCall(`/transactions/${id}`, {
+    return apiCall(`/transactions/${id}/`, {
       method: 'DELETE',
     });
   },
@@ -225,37 +233,47 @@ export const transactionsAPI = {
     if (filters.endDate) queryParams.append('endDate', filters.endDate);
 
     const queryString = queryParams.toString();
-    const endpoint = queryString ? `/transactions/summary?${queryString}` : '/transactions/summary';
+    const endpoint = queryString ? `/transactions/summary/?${queryString}` : '/transactions/summary/';
     return apiCall(endpoint);
+  },
+  
+  getIncome: async () => {
+    // Get all income transactions
+    return apiCall('/transactions/income/');
+  },
+  
+  getExpense: async () => {
+    // Get all expense transactions
+    return apiCall('/transactions/expense/');
   },
 };
 
 // Notes API
 export const notesAPI = {
   getAll: async () => {
-    return apiCall('/notes');
+    return apiCall('/notes/');
   },
 
   getById: async (id) => {
-    return apiCall(`/notes/${id}`);
+    return apiCall(`/notes/${id}/`);
   },
 
   create: async (text) => {
-    return apiCall('/notes', {
+    return apiCall('/notes/', {
       method: 'POST',
       body: JSON.stringify({ text }),
     });
   },
 
   update: async (id, text) => {
-    return apiCall(`/notes/${id}`, {
+    return apiCall(`/notes/${id}/`, {
       method: 'PUT',
       body: JSON.stringify({ text }),
     });
   },
 
   delete: async (id) => {
-    return apiCall(`/notes/${id}`, {
+    return apiCall(`/notes/${id}/`, {
       method: 'DELETE',
     });
   },
@@ -268,7 +286,7 @@ export const settingsAPI = {
   },
 
   update: async (settingsData) => {
-    return apiCall('/settings', {
+    return apiCall('/settings/', {
       method: 'PUT',
       body: JSON.stringify(settingsData),
     });

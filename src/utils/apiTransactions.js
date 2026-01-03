@@ -6,11 +6,27 @@ let transactionsCache = null;
 export async function getTransactions(filters = {}) {
   try {
     const response = await transactionsAPI.getAll(filters);
-    // Handle different response formats
+    console.log('getTransactions response:', response);
+    
+    // Handle Django REST Framework paginated response
+    if (response.results) {
+      // Paginated response: { count, next, previous, results: [...] }
+      return response.results;
+    }
+    
+    // Handle array response directly
+    if (Array.isArray(response)) {
+      return response;
+    }
+    
+    // Handle custom format with transactions key
     if (response.transactions) {
       return response.transactions;
     }
-    return response;
+    
+    // If response is empty object or unexpected format, return empty array
+    console.warn('Unexpected response format:', response);
+    return [];
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return [];
@@ -60,7 +76,27 @@ export async function deleteTransaction(id) {
 
 export async function getTransactionSummary(filters = {}) {
   try {
-    return await transactionsAPI.getSummary(filters);
+    const summaryData = await transactionsAPI.getSummary(filters);
+    
+    // Handle both API response formats:
+    // Django format: { totalIncome, totalExpense, balance }
+    // API docs format: { total_income, total_expense, net_total, transaction_count }
+    if (summaryData.total_income !== undefined) {
+      // Convert API docs format to frontend format
+      return {
+        totalIncome: summaryData.total_income || 0,
+        totalExpense: summaryData.total_expense || 0,
+        balance: summaryData.net_total || (summaryData.total_income - summaryData.total_expense) || 0,
+        transactionCount: summaryData.transaction_count || 0
+      };
+    }
+    
+    // Return Django format as-is (already in correct format)
+    return {
+      totalIncome: summaryData.totalIncome || 0,
+      totalExpense: summaryData.totalExpense || 0,
+      balance: summaryData.balance || 0
+    };
   } catch (error) {
     console.error('Error fetching summary:', error);
     return { totalIncome: 0, totalExpense: 0, balance: 0 };

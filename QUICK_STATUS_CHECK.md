@@ -95,3 +95,4 @@ print(f"Transactions: {Transaction.objects.count()}")
 **Current:** Data → localStorage → ❌ Lost
 **Needed:** Data → API → Database → ✅ Saved
 
+

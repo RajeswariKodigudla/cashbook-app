@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import FilterTabs from "../components/FilterTabs";
 import SummaryBar from "../components/SummaryBar";
 import { filterByRange } from "../utils/dateFilters";
@@ -6,6 +7,7 @@ import { getTransactions } from "../utils/apiTransactions";
 import "../styles/home.css";
 
 export default function Home({ search }) {
+  const navigate = useNavigate();
   const [range, setRange] = useState("all");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +19,10 @@ export default function Home({ search }) {
       try {
         setLoading(true);
         const data = await getTransactions();
-        setTransactions(data || []);
+        console.log('Loaded transactions:', data);
+        // Ensure data is an array
+        const transactionsArray = Array.isArray(data) ? data : [];
+        setTransactions(transactionsArray);
         setError("");
       } catch (err) {
         console.error("Error loading transactions:", err);
@@ -31,6 +36,9 @@ export default function Home({ search }) {
 
     loadTransactions();
   }, []);
+
+  // Refresh transactions when component mounts or after save
+  // You can add a refresh trigger here if needed
 
   // Filter transactions by date range
   const filtered = filterByRange(transactions, range);
@@ -89,7 +97,12 @@ export default function Home({ search }) {
       {!loading && !error && searchFiltered.length > 0 && (
         <div className="transaction-list">
           {searchFiltered.map((t) => (
-            <div key={t.id} className="transaction-row">
+            <div 
+              key={t.id} 
+              className="transaction-row"
+              onClick={() => navigate(`/edit/${t.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="left">
                 <div className="name">{t.name || t.type}</div>
                 <div className="time">

@@ -277,3 +277,4 @@ localStorage.getItem('authToken')
 
 Your frontend is now ready to connect to the backend! 🎉
 
+

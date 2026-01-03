@@ -8,6 +8,9 @@ export default function LoginModal({ onClose, onSuccess }) {
     username: '',
     email: '',
     password: '',
+    password_confirm: '',
+    first_name: '',
+    last_name: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,15 +25,42 @@ export default function LoginModal({ onClose, onSuccess }) {
       if (isLogin) {
         // Django uses username, not email for login
         result = await login(formData.username || formData.email, formData.password);
+        if (result.success) {
+          onSuccess?.(result.user, result.token);
+          onClose();
+        } else {
+          setError(result.message || 'Authentication failed');
+        }
       } else {
-        result = await register(formData.username, formData.email, formData.password);
-      }
-
-      if (result.success) {
-        onSuccess?.(result.user, result.token);
-        onClose();
-      } else {
-        setError(result.message || 'Authentication failed');
+        // Registration - validate password confirmation
+        if (formData.password !== formData.password_confirm) {
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
+        }
+        
+        result = await register(
+          formData.username, 
+          formData.email, 
+          formData.password, 
+          formData.password_confirm,
+          formData.first_name,
+          formData.last_name
+        );
+        
+        if (result.success) {
+          // After successful registration, automatically log the user in
+          const loginResult = await login(formData.username, formData.password);
+          if (loginResult.success) {
+            onSuccess?.(loginResult.user, loginResult.token);
+            onClose();
+          } else {
+            setError('Registration successful! Please login.');
+            setIsLogin(true);
+          }
+        } else {
+          setError(result.message || 'Registration failed');
+        }
       }
     } catch (err) {
       setError(err.message || 'Something went wrong');
@@ -53,11 +83,33 @@ export default function LoginModal({ onClose, onSuccess }) {
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <>
+              <input
+                type="text"
+                placeholder="First Name (optional)"
+                value={formData.first_name}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Last Name (optional)"
+                value={formData.last_name}
+                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+              />
+            </>
+          )}
           <input
             type="text"
             placeholder={isLogin ? "Username" : "Username"}
             value={isLogin ? (formData.username || formData.email) : formData.username}
-            onChange={(e) => setFormData({ ...formData, username: e.target.value, email: e.target.value })}
+            onChange={(e) => {
+              if (isLogin) {
+                setFormData({ ...formData, username: e.target.value, email: e.target.value });
+              } else {
+                setFormData({ ...formData, username: e.target.value });
+              }
+            }}
             required
           />
           {!isLogin && (
@@ -76,6 +128,15 @@ export default function LoginModal({ onClose, onSuccess }) {
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
           />
+          {!isLogin && (
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={formData.password_confirm}
+              onChange={(e) => setFormData({ ...formData, password_confirm: e.target.value })}
+              required
+            />
+          )}
           <button type="submit" disabled={loading}>
             {loading ? 'Loading...' : isLogin ? 'Login' : 'Register'}
           </button>

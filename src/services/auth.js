@@ -101,16 +101,33 @@ export const login = async (username, password) => {
   }
 };
 
-export const register = async (username, email, password) => {
+export const register = async (username, email, password, password_confirm, first_name = '', last_name = '') => {
   try {
-    const response = await authAPI.register(username, email, password);
-    if (response.token) {
-      setAuthToken(response.token);
-      return { success: true, user: response.user, token: response.token };
+    const response = await authAPI.register(username, email, password, password_confirm || password, first_name, last_name);
+    // Django register endpoint returns: {"message": "User created successfully", "username": "your_username"}
+    if (response.message && response.username) {
+      return { 
+        success: true, 
+        message: response.message, 
+        username: response.username 
+      };
     }
     return { success: false, message: 'Invalid response from server' };
   } catch (error) {
-    return { success: false, message: error.message || 'Registration failed' };
+    // Better error messages
+    let errorMessage = 'Registration failed';
+    if (error.message) {
+      errorMessage = error.message;
+    } else if (error.data) {
+      if (error.data.detail) {
+        errorMessage = error.data.detail;
+      } else if (error.data.message) {
+        errorMessage = error.data.message;
+      } else if (typeof error.data === 'string') {
+        errorMessage = error.data;
+      }
+    }
+    return { success: false, message: errorMessage };
   }
 };
 

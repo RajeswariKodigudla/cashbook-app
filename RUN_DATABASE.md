@@ -123,3 +123,4 @@ You should see: `Connected to MongoDB`
 - ✅ SQLite: Working (file exists at `backend/backend/db.sqlite3`)
 - ❓ MongoDB: Need to check if service is running
 
+
