@@ -6,26 +6,34 @@ let transactionsCache = null;
 export async function getTransactions(filters = {}) {
   try {
     const response = await transactionsAPI.getAll(filters);
-    console.log('getTransactions response:', response);
+    
+    // Handle wrapped response format: {success: true, data: {...}}
+    let data = response;
+    if (response.success && response.data) {
+      data = response.data;
+    }
     
     // Handle Django REST Framework paginated response
-    if (response.results) {
+    if (data.results) {
       // Paginated response: { count, next, previous, results: [...] }
-      return response.results;
+      return data.results;
     }
     
     // Handle array response directly
-    if (Array.isArray(response)) {
-      return response;
+    if (Array.isArray(data)) {
+      return data;
     }
     
     // Handle custom format with transactions key
-    if (response.transactions) {
-      return response.transactions;
+    if (data.transactions) {
+      return data.transactions;
     }
     
     // If response is empty object or unexpected format, return empty array
-    console.warn('Unexpected response format:', response);
+    // Only warn in development mode
+    if (import.meta.env.MODE === 'development' && Object.keys(data).length > 0) {
+      console.warn('Unexpected response format:', response);
+    }
     return [];
   } catch (error) {
     console.error('Error fetching transactions:', error);
@@ -76,7 +84,13 @@ export async function deleteTransaction(id) {
 
 export async function getTransactionSummary(filters = {}) {
   try {
-    const summaryData = await transactionsAPI.getSummary(filters);
+    const response = await transactionsAPI.getSummary(filters);
+    
+    // Handle wrapped response format: {success: true, data: {...}}
+    let summaryData = response;
+    if (response.success && response.data) {
+      summaryData = response.data;
+    }
     
     // Handle both API response formats:
     // Django format: { totalIncome, totalExpense, balance }

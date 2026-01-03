@@ -1,136 +1,54 @@
-# Start Backend Server - Quick Guide
+# 🚀 Start Development Server
 
-## 🚀 **How to Start Django Backend Server**
-
-### **Step 1: Navigate to Backend Directory**
+## Quick Start
 
 ```bash
-cd backend\backend
+npm install
+npm start
 ```
 
-### **Step 2: Activate Virtual Environment**
+The server will start at: **http://localhost:5173**
+
+## Alternative Commands
 
 ```bash
-..\venv\Scripts\activate
+# Using dev script
+npm run dev
+
+# Or using the batch file (Windows)
+start-dev.bat
 ```
 
-**Expected:** Should see `(venv)` in your prompt
+## ✅ Verification
 
-### **Step 3: Start Server**
+Once the server starts, you should see:
+```
+  VITE v5.x.x  ready in xxx ms
 
-```bash
-python manage.py runserver
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
 ```
 
-**Expected Output:**
-```
-Watching for file changes with StatReloader
-Performing system checks...
+Then open your browser to: **http://localhost:5173**
 
-System check identified no issues (0 silenced).
-January 15, 2025 - 12:00:00
-Django version X.X.X, using settings 'backend.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CTRL-BREAK.
-```
+## 🔧 Troubleshooting
 
-### **Step 4: Verify Server is Running**
-
-**Open browser and go to:**
-```
-http://127.0.0.1:8000/
-```
-
-**Expected:** Should see API information JSON
-
----
-
-## ✅ **Server is Running When You See:**
-
-- ✅ "Starting development server at http://127.0.0.1:8000/"
-- ✅ No errors in console
-- ✅ Can access `http://127.0.0.1:8000/` in browser
-
----
-
-## ❌ **Common Issues**
-
-### **Issue 1: "No module named 'django'"**
-
-**Fix:**
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-### **Issue 2: "Port 8000 already in use"**
-
-**Fix:** Use different port:
-```bash
-python manage.py runserver 8001
-```
-
-Then update `src/config/api.js`:
+### Port Already in Use
+If port 5173 is busy, change it in `vite.config.js`:
 ```javascript
-export const API_BASE_URL = 'http://127.0.0.1:8001/api';
-```
-
-### **Issue 3: "ModuleNotFoundError"**
-
-**Fix:** Make sure virtual environment is activated:
-```bash
-..\venv\Scripts\activate
-```
-
-### **Issue 4: "Database locked"**
-
-**Fix:** Close other processes using database, or restart
-
----
-
-## 🧪 **Quick Test**
-
-**After starting server, test in browser:**
-
-```
-http://127.0.0.1:8000/
-```
-
-**Should return:**
-```json
-{
-  "message": "Cashbook API",
-  "version": "1.0",
-  "endpoints": {...}
+server: {
+  port: 3000,  // Change to any available port
 }
 ```
 
----
-
-## 📝 **Complete Command Sequence**
-
+### Module Not Found Errors
 ```bash
-# Navigate to backend
-cd backend\backend
-
-# Activate virtual environment
-..\venv\Scripts\activate
-
-# Start server
-python manage.py runserver
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-**Keep this terminal window open!** The server runs until you stop it (CTRL+C).
-
----
-
-## 🎯 **Once Server is Running**
-
-1. ✅ Server running on `http://127.0.0.1:8000/`
-2. ✅ Frontend can connect to API
-3. ✅ Can save income/expense transactions
-4. ✅ Can login and use app
-
-**Now try saving income data again!**
-
+### Clear Cache
+```bash
+npm run dev -- --force
+```
 

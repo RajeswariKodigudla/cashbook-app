@@ -10,12 +10,12 @@ export default function Expense() {
   const [date, setDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [time, setTime] = useState(
-    new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
+  // Initialize time in 24-hour format (HH:MM)
+  const getCurrentTime24 = () => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
+  const [time, setTime] = useState(getCurrentTime24());
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -34,20 +34,80 @@ export default function Expense() {
     setLoading(true);
 
     try {
-      // Ensure amount is properly formatted for Django DecimalField
+      // Validate amount before sending
+      const amountValue = parseFloat(amount);
+      if (isNaN(amountValue) || amountValue <= 0) {
+        setError("Amount must be a positive number");
+        setLoading(false);
+        return;
+      }
+
+      // Format time properly (HH:MM:SS format, 24-hour)
+      // HTML5 time input returns value in 24-hour format (HH:MM), but we need HH:MM:SS
+      let formattedTime = null;
+      
+      if (time) {
+        // HTML5 time input always returns 24-hour format (HH:MM)
+        // Convert to HH:MM:SS format
+        const parts = time.split(':');
+        if (parts.length >= 2) {
+          const hours = parts[0].padStart(2, '0');
+          const minutes = parts[1].padStart(2, '0');
+          const seconds = parts[2] || '00';
+          formattedTime = `${hours}:${minutes}:${seconds.padStart(2, '0')}`;
+        } else {
+          // Fallback: if format is unexpected, use current time
+          const now = new Date();
+          formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
+        }
+      } else {
+        // Default to current time in 24-hour format
+        const now = new Date();
+        formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
+      }
+      
+      console.log('⏰ Time conversion:', {
+        original: time,
+        formatted: formattedTime,
+        parts: time ? time.split(':') : null
+      });
+
+      // Backend expects: type="Expense" (capitalized), mode (not payment), amount as number
+      // Required fields: type, amount, date
+      // Optional fields: time, name, remark, mode
       const transactionData = {
-        type: "expense",
-        date,
-        time,
-        amount: String(Number(amount).toFixed(2)), // Convert to string with 2 decimals for DecimalField
-        name: name || '',
-        category: category || '',
-        remark: remark || '',
-        payment: payment || 'Cash',
-        account: getCurrentAccount() || "Cash",
+        type: "Expense",  // Backend expects capitalized: "Income" or "Expense"
+        amount: amountValue,  // Send as number (not string), backend will convert to Decimal
+        date: date,  // Format: YYYY-MM-DD (required)
+        time: formattedTime || undefined,  // Format: HH:MM:SS (optional, backend defaults to 00:00:00)
+        name: name || '',  // Optional string
+        remark: remark || '',  // Optional string
+        mode: payment || 'Cash',  // Backend expects "mode" not "payment", must be "Cash", "Online", or "Other"
       };
       
-      console.log('Sending transaction data:', transactionData);
+      // CRITICAL FIX: Ensure type is always capitalized (safety check)
+      if (transactionData.type) {
+        const typeLower = transactionData.type.toLowerCase();
+        if (typeLower === 'income') {
+          transactionData.type = 'Income';
+        } else if (typeLower === 'expense') {
+          transactionData.type = 'Expense';
+        }
+      }
+      
+      // Remove undefined/null values to avoid sending them
+      Object.keys(transactionData).forEach(key => {
+        if (transactionData[key] === undefined || transactionData[key] === null) {
+          delete transactionData[key];
+        }
+      });
+      
+      // Remove category and account - backend doesn't expect these fields
+      // category is not in the backend model
+      // account is not in the serializer fields
+      
+      console.log('📤 Sending transaction data:', JSON.stringify(transactionData, null, 2));
+      console.log('✅ Type field verification:', { type: transactionData.type, isCapitalized: transactionData.type === 'Income' || transactionData.type === 'Expense' });
       await createTransaction(transactionData);
 
       if (goBack) {
@@ -61,12 +121,43 @@ export default function Expense() {
       }
     } catch (err) {
       console.error("Transaction error:", err);
+      console.error("Error details:", {
+        message: err.message,
+        status: err.status,
+        data: err.data,
+        responseText: err.responseText
+      });
       
       // Better error messages
       let errorMessage = "Error saving transaction. Please try again.";
       
       if (err.isNetworkError || err.message.includes('Failed to fetch') || err.message.includes('Cannot connect')) {
         errorMessage = "Cannot connect to server. Please make sure:\n1. Backend server is running\n2. Check browser console for details";
+      } else if (err.status === 401) {
+        errorMessage = "Authentication failed. Please login again.";
+      } else if (err.status === 400) {
+        // Show detailed validation errors
+        if (err.data) {
+          const fieldErrors = Object.entries(err.data)
+            .filter(([key, value]) => Array.isArray(value) && value.length > 0)
+            .map(([key, value]) => `${key}: ${value[0]}`)
+            .join('\n');
+          if (fieldErrors) {
+            errorMessage = `Validation Error:\n${fieldErrors}`;
+          } else if (err.data.detail) {
+            errorMessage = err.data.detail;
+          } else if (err.data.message) {
+            errorMessage = err.data.message;
+          } else {
+            errorMessage = JSON.stringify(err.data, null, 2);
+          }
+        } else {
+          errorMessage = err.message || "Invalid data. Please check all fields.";
+        }
+      } else if (err.status === 403) {
+        errorMessage = "Permission denied. Please check your account.";
+      } else if (err.status === 500) {
+        errorMessage = "Server error. Please try again later.";
       } else if (err.message) {
         errorMessage = err.message;
       } else if (err.data) {
@@ -74,6 +165,15 @@ export default function Expense() {
           errorMessage = err.data.detail;
         } else if (err.data.message) {
           errorMessage = err.data.message;
+        } else if (typeof err.data === 'object') {
+          // Format field errors
+          const fieldErrors = Object.entries(err.data)
+            .filter(([key, value]) => Array.isArray(value) && value.length > 0)
+            .map(([key, value]) => `${key}: ${value[0]}`)
+            .join(', ');
+          if (fieldErrors) {
+            errorMessage = fieldErrors;
+          }
         }
       }
       
@@ -112,7 +212,14 @@ export default function Expense() {
           <input
             type="time"
             value={time}
-            onChange={(e) => setTime(e.target.value)}
+            onChange={(e) => {
+              // Ensure time is always in 24-hour format (HH:MM)
+              const timeValue = e.target.value;
+              if (timeValue) {
+                setTime(timeValue); // HTML5 time input always returns 24-hour format
+              }
+            }}
+            step="1" // Allow seconds
           />
         </div>
       </div>

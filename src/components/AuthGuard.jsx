@@ -1,53 +1,68 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import LoginModal from './LoginModal';
 
 export default function AuthGuard({ children }) {
-  const { isAuthenticated, loading, login, refreshAuth } = useAuth();
-  const navigate = useNavigate();
+  // Only log in development
+  if (import.meta.env.MODE === 'development') {
+    console.log("🛡️ AuthGuard is rendering...");
+  }
+  
+  let authContext;
+  try {
+    authContext = useAuth();
+  } catch (error) {
+    // Always log errors
+    console.error("❌ Error getting auth context:", error);
+    return (
+      <div style={{ padding: "20px", color: "red" }}>
+        <h2>Error: Auth context not available</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+  
+  const { isAuthenticated, loading } = authContext;
 
   useEffect(() => {
-    console.log('AuthGuard - loading:', loading, 'isAuthenticated:', isAuthenticated);
+    if (import.meta.env.MODE === 'development') {
+      console.log('🛡️ AuthGuard - loading:', loading, 'isAuthenticated:', isAuthenticated);
+    }
   }, [isAuthenticated, loading]);
 
-  const handleLoginSuccess = async (user, token) => {
-    console.log('Login success in AuthGuard:', user, token);
-    // Update auth context
-    if (login) {
-      login(user, token);
-    }
-    // Refresh auth state
-    if (refreshAuth) {
-      await refreshAuth();
-    }
-  };
+  // Removed handleLoginSuccess - Login page handles this now
 
   if (loading) {
+    if (import.meta.env.MODE === 'development') {
+      console.log("🛡️ AuthGuard showing loading state");
+    }
     return (
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        height: '100vh' 
+        height: '100vh',
+        flexDirection: 'column',
+        gap: '10px',
+        backgroundColor: '#f5f5f5'
       }}>
-        <div>Loading...</div>
+        <div style={{ fontSize: '18px' }}>Loading...</div>
+        <div style={{ fontSize: '12px', color: '#666' }}>Checking authentication...</div>
       </div>
     );
   }
 
   if (!isAuthenticated) {
-    return (
-      <LoginModal
-        onClose={() => {
-          // Don't allow closing without login - show message
-          alert('Please login to continue');
-        }}
-        onSuccess={handleLoginSuccess}
-      />
-    );
+    if (import.meta.env.MODE === 'development') {
+      console.log("🛡️ AuthGuard redirecting to login page");
+    }
+    // Redirect to login page instead of showing modal
+    return <Navigate to="/login" replace />;
   }
 
+  if (import.meta.env.MODE === 'development') {
+    console.log("🛡️ AuthGuard rendering children (authenticated)");
+  }
   return <>{children}</>;
 }
 

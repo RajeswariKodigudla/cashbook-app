@@ -4,7 +4,8 @@
  */
 
 export const testConnection = async () => {
-  const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
+  // Vite uses import.meta.env instead of process.env
+  const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
   const results = [];
 
   console.log('🧪 Testing Frontend-Backend Connection...\n');

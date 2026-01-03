@@ -1,9 +1,15 @@
 // API Configuration
-// Backend URL: https://rajeswarikodigudla.github.io/cashbook-backend/
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? 'https://rajeswarikodigudla.github.io/cashbook-backend/api'  // Deployed backend URL
-    : 'http://127.0.0.1:8000/api');                // Local development
+// Backend deployed to PythonAnywhere: https://rajeswari.pythonanywhere.com
+//
+// Vite uses import.meta.env instead of process.env
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.MODE === 'production' 
+    ? 'https://rajeswari.pythonanywhere.com/api'  // PythonAnywhere backend URL
+    : 'http://127.0.0.1:8000/api');  // Local development
+
+// Log the API URL for debugging
+console.log('🌐 API Base URL:', API_BASE_URL);
+console.log('💡 To test connection, run: testBackendConnection() in browser console');
 
 // For Node.js backend, use:
 // export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';

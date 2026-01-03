@@ -35,17 +35,46 @@ export default function IncomeAPI() {
     setLoading(true);
 
     try {
-      await createTransaction({
-        type: "income",
-        date,
-        time,
-        amount: Number(amount),
-        name,
-        category,
-        remark,
-        payment,
-        account: getCurrentAccount(),
-      });
+      // Format time properly (HH:MM:SS format, 24-hour)
+      let formattedTime = null;
+      if (time) {
+        const parts = time.split(':');
+        if (parts.length >= 2) {
+          const hours = String(parseInt(parts[0], 10)).padStart(2, '0');
+          const minutes = String(parseInt(parts[1], 10)).padStart(2, '0');
+          const seconds = parts[2] ? String(parseInt(parts[2], 10)).padStart(2, '0') : '00';
+          formattedTime = `${hours}:${minutes}:${seconds}`;
+        } else {
+          const now = new Date();
+          formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
+        }
+      } else {
+        const now = new Date();
+        formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
+      }
+
+      const transactionData = {
+        type: "Income",  // Backend expects capitalized: "Income" or "Expense"
+        amount: Number(amount),  // Send as number
+        date: date,  // Format: YYYY-MM-DD
+        time: formattedTime,  // Format: HH:MM:SS (24-hour)
+        name: name || '',
+        remark: remark || '',
+        mode: payment || 'Cash',  // Backend expects "mode" not "payment", must be "Cash", "Online", or "Other"
+        // category and account removed - not in backend model
+      };
+      
+      // CRITICAL FIX: Ensure type is always capitalized (safety check)
+      if (transactionData.type) {
+        const typeLower = transactionData.type.toLowerCase();
+        if (typeLower === 'income') {
+          transactionData.type = 'Income';
+        } else if (typeLower === 'expense') {
+          transactionData.type = 'Expense';
+        }
+      }
+      
+      await createTransaction(transactionData);
 
       if (goBack) {
         navigate("/");

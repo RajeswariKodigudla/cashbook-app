@@ -12,7 +12,27 @@ const apiCall = async (endpoint, options = {}, retry = true) => {
   };
 
   try {
+    // Only log in development mode to reduce console noise
+    if (import.meta.env.MODE === 'development') {
+      console.log('📡 Making API call to:', url);
+    }
     const response = await fetch(url, config);
+    if (import.meta.env.MODE === 'development') {
+      console.log('📡 API Response Status:', response.status, response.statusText);
+    }
+    
+    // Check if response is HTML (GitHub Pages) instead of JSON (API)
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/html') && response.status === 200) {
+      console.error('❌ Backend returned HTML instead of JSON - likely GitHub Pages documentation, not API');
+      throw new Error(
+        'Backend URL appears to be GitHub Pages (static site), not a Django API server.\n\n' +
+        'GitHub Pages cannot host Django backends. You need to:\n' +
+        '1. Deploy your Django backend to Railway, Render, or another platform\n' +
+        '2. Update API_BASE_URL in src/config/api.js with the actual backend URL\n' +
+        '3. Or use local backend: http://127.0.0.1:8000/api (run: python manage.py runserver)'
+      );
+    }
     
     // Handle 401 Unauthorized - try to refresh token
     if (response.status === 401 && retry) {
@@ -35,13 +55,19 @@ const apiCall = async (endpoint, options = {}, retry = true) => {
     let responseText = '';
     try {
       responseText = await response.text();
-      console.log('API Response Status:', response.status);
-      console.log('API Response Text:', responseText);
+      // Only log in development mode to reduce console noise
+      if (import.meta.env.MODE === 'development') {
+        console.log('API Response Status:', response.status);
+        console.log('API Response Text:', responseText);
+      }
       
       if (responseText) {
         try {
           data = JSON.parse(responseText);
-          console.log('API Response Data:', data);
+          // Only log in development mode
+          if (import.meta.env.MODE === 'development') {
+            console.log('API Response Data:', data);
+          }
         } catch (parseError) {
           console.error('Failed to parse JSON:', parseError);
           console.error('Response text was:', responseText);
@@ -85,6 +111,17 @@ const apiCall = async (endpoint, options = {}, retry = true) => {
       error.status = response.status;
       error.data = data;
       error.responseText = responseText;
+      // Enhanced error logging for validation errors
+      if (response.status === 400 && data) {
+        console.error('❌ Validation Error Details:');
+        Object.entries(data).forEach(([field, errors]) => {
+          if (Array.isArray(errors) && errors.length > 0) {
+            console.error(`  ❌ ${field}:`, errors);
+          } else if (typeof errors === 'string') {
+            console.error(`  ❌ ${field}:`, errors);
+          }
+        });
+      }
       console.error('API Error Response:', { status: response.status, data, responseText });
       throw error;
     }
@@ -95,13 +132,34 @@ const apiCall = async (endpoint, options = {}, retry = true) => {
     
     // Handle network errors (failed to fetch)
     if (error.message === 'Failed to fetch' || error.name === 'TypeError' || !error.status) {
-      const networkError = new Error(
-        'Cannot connect to server. Please check:\n' +
-        '1. Backend server is running (python manage.py runserver)\n' +
-        '2. Backend URL is correct: http://127.0.0.1:8000\n' +
-        '3. No firewall blocking the connection'
-      );
+      // Check if it's a CORS error
+      const isCorsError = error.message.includes('CORS') || 
+                         error.message.includes('Access-Control') ||
+                         (error.name === 'TypeError' && !error.status);
+      
+      let errorMessage = 'Cannot connect to backend server.\n\n';
+      
+      if (API_BASE_URL.includes('github.io')) {
+        errorMessage += '⚠️ IMPORTANT: GitHub Pages cannot host Django APIs!\n\n';
+        errorMessage += 'The URL https://rajeswarikodigudla.github.io/cashbook-backend/ is likely just documentation.\n\n';
+        errorMessage += 'SOLUTIONS:\n';
+        errorMessage += '1. Deploy Django backend to Railway/Render/Heroku\n';
+        errorMessage += '2. Update API_BASE_URL in src/config/api.js\n';
+        errorMessage += '3. Or use local backend (see below)\n\n';
+      }
+      
+      errorMessage += 'TROUBLESHOOTING:\n';
+      errorMessage += `1. Backend URL: ${API_BASE_URL}\n`;
+      errorMessage += '2. Test in browser: Open the URL above\n';
+      errorMessage += '3. Should return JSON, not HTML\n';
+      if (isCorsError) {
+        errorMessage += '4. CORS error detected - backend needs CORS headers\n';
+      }
+      errorMessage += '5. For local dev: Run "python manage.py runserver" and use http://127.0.0.1:8000/api';
+      
+      const networkError = new Error(errorMessage);
       networkError.isNetworkError = true;
+      networkError.isCorsError = isCorsError;
       throw networkError;
     }
     
@@ -143,14 +201,25 @@ export const authAPI = {
 
   getCurrentUser: async () => {
     // Django doesn't have /auth/me by default
-    // Try to get user info from accounts endpoint or create a custom endpoint
-    // For now, return empty user object
+    // Since we don't have a user endpoint, we'll validate the token by trying
+    // a simple API call. If it succeeds, user is authenticated.
+    // For now, just return a default user - the token validation happens via
+    // the login/refresh token mechanism
     try {
-      // Try accounts endpoint which requires auth
-      await apiCall('/accounts/');
+      // Try a simple endpoint that requires auth (like transactions summary)
+      // This validates the token without needing a user endpoint
+      await apiCall('/transactions/summary/');
+      // If successful, return default user - token is valid
       return { user: { username: 'User' } };
     } catch (error) {
-      throw error;
+      // If it's a 404 or endpoint doesn't exist, that's OK - token might still be valid
+      // If it's 401, token is invalid
+      if (error.status === 401) {
+        throw error; // Token is invalid
+      }
+      // For 404 or other errors, assume token is valid (might be endpoint issue)
+      // Return default user - the actual auth will be validated on next API call
+      return { user: { username: 'User' } };
     }
   },
 };

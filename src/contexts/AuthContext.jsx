@@ -17,18 +17,30 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
+  // Only log in development
+  if (import.meta.env.MODE === 'development') {
+    console.log("🔐 AuthProvider is initializing...");
+  }
+
   useEffect(() => {
+    if (import.meta.env.MODE === 'development') {
+      console.log("🔐 AuthProvider useEffect running, calling checkAuth...");
+    }
     checkAuth();
   }, []);
 
   const checkAuth = async () => {
     try {
       const hasToken = isAuthenticated();
-      console.log('Auth check - has token:', hasToken);
+      if (import.meta.env.MODE === 'development') {
+        console.log('Auth check - has token:', hasToken);
+      }
       
       if (!hasToken) {
         // No token - definitely not authenticated
-        console.log('No token found - not authenticated');
+        if (import.meta.env.MODE === 'development') {
+          console.log('No token found - not authenticated');
+        }
         setIsAuth(false);
         setUser(null);
         setLoading(false);
@@ -36,32 +48,63 @@ export const AuthProvider = ({ children }) => {
       }
       
       // Token exists - validate it by trying to get user info
-      console.log('Token found - validating...');
+      // Use a timeout to prevent hanging (3 seconds max)
+      if (import.meta.env.MODE === 'development') {
+        console.log('Token found - validating...');
+      }
       try {
-        const userData = await getCurrentUser();
-        console.log('Token valid - user:', userData);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Auth check timeout - backend may not be accessible')), 3000)
+        );
+        
+        const userDataPromise = getCurrentUser();
+        const userData = await Promise.race([userDataPromise, timeoutPromise]);
+        
+        if (import.meta.env.MODE === 'development') {
+          console.log('Token valid - user:', userData);
+        }
         setUser(userData.user || { username: 'User' });
         setIsAuth(true);
       } catch (error) {
         console.error('Token validation failed:', error);
-        // Token is invalid - clear it and mark as not authenticated
-        if (error.status === 401 || error.status === 0 || error.message?.includes('401') || error.message?.includes('Failed to fetch')) {
-          console.log('Token invalid or expired - clearing and logging out');
-          authLogout(); // Clear invalid token
-          setIsAuth(false);
-          setUser(null);
-        } else {
-          // Network error or other issue - still mark as not authenticated to be safe
-          console.log('Error validating token - marking as not authenticated');
-          setIsAuth(false);
-          setUser(null);
+        
+        // Check if it's a backend connection issue
+        if (error.message?.includes('timeout') || 
+            error.message?.includes('Failed to fetch') ||
+            error.message?.includes('GitHub Pages') ||
+            error.isNetworkError) {
+          console.warn('⚠️ Backend connection issue detected');
+          console.warn('   This might be because:');
+          console.warn('   1. Backend is not deployed (GitHub Pages cannot host Django)');
+          console.warn('   2. Backend URL is incorrect');
+          console.warn('   3. Backend server is not running');
+          console.warn('   Run testBackendConnection() in console to diagnose');
         }
+        
+        // Token is invalid or network error - clear it and mark as not authenticated
+        // Don't clear token on network errors - just mark as not authenticated
+        // This allows user to try again if backend comes back online
+        if (error.message?.includes('timeout') || 
+            error.message?.includes('Failed to fetch') ||
+            error.isNetworkError) {
+          console.log('Network error or timeout - marking as not authenticated (keeping token for retry)');
+        } else {
+          console.log('Token invalid - clearing and logging out');
+          try {
+            authLogout(); // Clear invalid token
+          } catch (logoutError) {
+            console.error('Logout error:', logoutError);
+          }
+        }
+        setIsAuth(false);
+        setUser(null);
       }
     } catch (error) {
       console.error('Auth check error:', error);
       setIsAuth(false);
       setUser(null);
     } finally {
+      // Always set loading to false, even if there's an error
       setLoading(false);
     }
   };

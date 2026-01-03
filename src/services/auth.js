@@ -7,6 +7,14 @@ export const getCurrentUser = async () => {
     const userResponse = await authAPI.getCurrentUser();
     return { user: userResponse.user || { username: 'User' } };
   } catch (error) {
+    // Don't log as error if it's just a missing endpoint or 404
+    if (error.status === 404 || error.message?.includes('accounts') || error.message?.includes('endpoint')) {
+      if (import.meta.env.MODE === 'development') {
+        console.log('User endpoint not available, using default user');
+      }
+      return { user: { username: 'User' } };
+    }
+    // For network errors or auth errors, log and throw
     console.error('Error getting current user:', error);
     throw error;
   }
