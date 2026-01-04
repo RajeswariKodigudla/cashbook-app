@@ -113,3 +113,5 @@ Loaded transactions: [...]
 **The fix is applied! Refresh your browser and transactions should display now.**
 
 
+
+

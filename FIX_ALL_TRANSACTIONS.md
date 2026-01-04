@@ -124,3 +124,5 @@ getTransactions() // Fetches all transactions
 **The All Transactions page now displays all transactions from the API!**
 
 
+
+

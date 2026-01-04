@@ -66,3 +66,5 @@ GET http://127.0.0.1:8000/favicon.ico 404 (Not Found)
 **The favicon error is now fixed! The browser will load it from the frontend instead of trying the backend.**
 
 
+
+

@@ -83,3 +83,5 @@ Transactions are displaying, but clicking on them doesn't do anything. They shou
 **The fix is applied! Transactions are now clickable and will navigate to the edit page.**
 
 
+
+
