@@ -1,0 +1,47 @@
+/**
+ * Bright, minimal color theme
+ */
+
+:root {
+  /* Primary Colors - Bright and Vibrant */
+  --color-primary: #3B82F6; /* Bright Blue */
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #2563EB;
+  
+  /* Success - Bright Green */
+  --color-success: #10B981;
+  --color-success-light: #34D399;
+  
+  /* Warning - Bright Yellow */
+  --color-warning: #F59E0B;
+  --color-warning-light: #FBBF24;
+  
+  /* Error - Bright Red */
+  --color-error: #EF4444;
+  --color-error-light: #F87171;
+  
+  /* Background Colors - Light and Bright */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F8FAFC;
+  --color-bg-tertiary: #F1F5F9;
+  
+  /* Text Colors */
+  --color-text-primary: #1E293B;
+  --color-text-secondary: #64748B;
+  --color-text-tertiary: #94A3B8;
+  
+  /* Border Colors */
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  
+  /* Accent Colors */
+  --color-accent-1: #8B5CF6; /* Purple */
+  --color-accent-2: #EC4899; /* Pink */
+  --color-accent-3: #06B6D4; /* Cyan */
+  --color-accent-4: #F59E0B; /* Amber */
+  
+  /* Income/Expense Colors */
+  --color-income: #10B981;
+  --color-expense: #EF4444;
+}
+

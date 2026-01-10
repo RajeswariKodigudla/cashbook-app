@@ -1,0 +1,135 @@
+/**
+ * Global styles - Professional Cashbook App
+ */
+
+@import "tailwindcss";
+@import "./theme.css";
+@import "./responsive.css";
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border-color: var(--color-border, #E2E8F0);
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
+    color: var(--color-text-primary, #1E293B);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    line-height: 1.5;
+  }
+
+  #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ensure images and media are responsive */
+  img,
+  video,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Remove default button styles */
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Remove default input styles */
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  /* Bright Card Styles */
+  .bright-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border-light, #F1F5F9);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+    border-radius: 1rem;
+  }
+
+  .bright-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary, #3B82F6) 0%, var(--color-primary-dark, #2563EB) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, var(--color-success, #10B981) 0%, #059669 100%);
+  }
+
+  .gradient-income {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  }
+
+  .gradient-expense {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbars but allow scrolling */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+
+  /* Scrollbar hide with overflow */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
